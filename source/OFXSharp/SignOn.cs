@@ -19,9 +19,22 @@ namespace OFXSharp
         {
             StatusCode = Convert.ToInt32(node.GetValue("//CODE"));
             StatusSeverity = node.GetValue("//SEVERITY");
-            DTServer = node.GetValue("//DTSERVER").ToDate();
+            DTServer = GetDtServer(node.GetValue("//DTSERVER"));
             Language = node.GetValue("//LANGUAGE");
             IntuBid = node.GetValue("//INTU.BID");
+        }
+
+        /// <summary>
+        /// Some banks sends 000000000 as DTServer
+        /// </summary>
+        private DateTime GetDtServer(string value)
+        {
+            if (string.IsNullOrEmpty(value?.Trim('0', ' ')))
+            {
+                return DateTime.MinValue;
+            }
+
+            return value.ToDate();
         }
     }
 }
